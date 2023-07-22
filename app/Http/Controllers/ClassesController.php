@@ -14,7 +14,9 @@ class ClassesController extends Controller
      */
     public function index()
     {
-        //
+        $classes = Classes::all();
+
+        return response()->json($classes);
     }
 
     /**
@@ -35,7 +37,6 @@ class ClassesController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
