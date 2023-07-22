@@ -16,7 +16,7 @@ class AlunosController extends Controller
      */
     public function index()
     {
-        $dados = Alunos::all();
+        $dados = Alunos::paginate(30);
 
         return Inertia::render('alunos', ['dados' => $dados]);
     }
@@ -88,7 +88,14 @@ class AlunosController extends Controller
                 'min:7',
                 'regex:/^[\pL\s\-]+$/u',
                 'regex:/^(?=.*[aeiou])(?=.*[A-Z]).{2,}$/u'
-            ]
+            ],
+            'naturalidade' => [
+                'required',
+                'min:2',
+                'regex:/^[\pL\s\-]+$/u',
+                'regex:/^(?=.*[aeiou])(?=.*[A-Z]).{2,}$/u'
+            ],
+            'morada' => ['required'],
 
 
             /* 'email' => 'required|email|unique:users',
@@ -97,9 +104,11 @@ class AlunosController extends Controller
             'nome_da_mae.required' => 'O nome da mãe é obrigatório.',
             'nome_do_pai.required' => 'O nome do pai é obrigatório.',
             'nome.required' => 'O nome é obrigatório.',
+            'naturalidade.required' => 'A naturalidade é obrigatório.',
             'nome.regex' => 'O nome deve conter apenas letras, espaços e hífens.',
             'nome.regex' => 'O nome deve conter pelo menos duas vogais e uma letra maiúscula.',
             'nome.min' => 'O nome deve conter pelo menos 7 letras',
+            'morada.required' => 'Morada é obrigatório',
             'bi.unique' => 'Esse número de documento já existe',
             /* 'email.required' => 'O campo e-mail é obrigatório.',
             'email.email' => 'O campo e-mail deve ser um endereço de e-mail válido.',
@@ -153,9 +162,13 @@ class AlunosController extends Controller
      * @param  \App\Models\Alunos  $alunos
      * @return \Illuminate\Http\Response
      */
-    public function show(Alunos $alunos)
+    public function show(Request $request, Alunos $alunos)
     {
-        //
+
+        $id_aluno = $request->id;
+        $dados = Alunos::with('classe', 'turma', 'sala')->where('idtb_aluno', $id_aluno)->get();
+
+        return Inertia::render('DetalhesAluno', ['dados' => $dados]);
     }
 
     /**
